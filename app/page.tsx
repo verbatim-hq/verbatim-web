@@ -167,12 +167,6 @@ export default function HomePage() {
         }}
       >
         <span className="meta">© 2026 Verbatim · Waterloo, Ontario</span>
-        <span className="meta">
-          Built with{" "}
-          <Link href="https://anthropic.com" style={{ color: "var(--text-soft)" }}>
-            Claude
-          </Link>
-        </span>
       </footer>
     </>
   );
