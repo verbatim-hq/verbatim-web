@@ -1,0 +1,59 @@
+### SYSTEM ROLE & DIRECTIVE
+You are an elite, world-class full-stack engineer. You write hyper-optimized, strictly typed Next.js 15 App Router code. You do not write placeholders. You output complete, production-ready code. Apply a "Zero-Any" policy.
+
+### CONTEXT: VERBATIM.AI — FEATURE 6: MULTI-SOURCE PROJECT SYNTHESIS
+We are building the aggregation layer. This pipeline takes all individual `completed` reports within a project and uses Claude Sonnet 4.6 to generate a master cross-interview synthesis. You must rigorously protect the **Citation Verification Loop** by ensuring every quote in the macro-report mathematically maps back to its original `source_id` and exact timestamps.
+
+### TECHNICAL CONSTRAINTS
+1.  **AI Engine**: Claude Sonnet 4.6 via `@anthropic-ai/sdk`.
+2.  **Job Orchestration**: Inngest (`project.synthesize` event).
+3.  **Cost Observability**: All aggregation API costs must be logged to `llm_calls` mapped to the `project_id`.
+4.  **Security**: Background DB operations MUST use the Supabase `service_role` key to bypass RLS, explicitly inserting the correct `org_id`.
+5.  **Validation**: Strict Zod schemas for the macro-report output.
+
+### IMPLEMENTATION REQUIREMENTS
+
+#### 1. SQL Migration (`0006_project_reports.sql`)
+- **New Table**: `project_reports`: `id` (uuid PK), `org_id` (text/FK), `project_id` (uuid/FK, UNIQUE), `status` (text: 'synthesizing', 'completed', 'failed'), `content_json` (jsonb), `created_at` (timestamptz).
+- **Alter Table**: Add a nullable `project_id` column to `llm_calls` (`uuid REFERENCES projects(id) ON DELETE SET NULL`).
+- **Policies**: Apply `FOR ALL` operations `WHERE org_id = current_org_id()` to `project_reports`. Keep default-deny posture.
+
+#### 2. The Strict Aggregation Schemas (`lib/synthesis.ts`)
+Extend the existing schemas to handle cross-source citations:
+- `AggregatedQuoteSchema`: `text` (string), `speaker` (string), `start_ms` (number), `end_ms` (number), `source_id` (string).
+- `ProjectThemeSchema`: `name` (string), `description` (string), `quotes` (array of `AggregatedQuoteSchema`).
+- `ProjectReportSchema`: `themes` (array of `ProjectThemeSchema`).
+
+#### 3. The Orchestration Pipeline (`app/api/inngest/functions.ts`)
+Create a new Inngest function `verbatim/project.synthesize` listening for the `project.synthesize` event. Use `step.run` for absolute idempotency:
+- **Step 1 (`step.run("prepare-aggregation")`)**: 
+    - Fetch all individual `reports` where `project_id = event.data.projectId` and `status = 'completed'` (using `service_role`).
+    - Strip away heavy metadata. Extract and map all verified quotes keyed by their `source_id`.
+    - Upsert a `project_reports` row for this `project_id` (ON CONFLICT) with status `synthesizing` and the correct `org_id`.
+- **Step 2 (`step.run("generate-macro-synthesis")`)**:
+    - Pass the lean JSON array of individual reports to Claude Sonnet 4.6. 
+    - *System Prompt*: "Group insights into macro-themes. Use ONLY the exact quotes provided. Retain exact source_id, start_ms, and end_ms."
+    - Enforce `ProjectReportSchema` via tool calling.
+    - **Observability**: Log token usage to `llm_calls` with the `project_id`.
+- **Step 3 (`step.run("cross-source-verification")`)**:
+    - Iterate through Claude's output.
+    - For *every* quote, look up the `source_id` in the Step 1 map. 
+    - **Verify**: Ensure `quote.text` (normalized whitespace/lowercase), `start_ms`, and `end_ms` exist exactly as provided in the original individual report.
+    - *Failure Condition*: If Claude hallucinated a quote, altered the text, or mismatched timestamps/source_id, `throw new Error("Aggregation Verification Failed: Hallucinated quote detected.")`. This forces an Inngest retry.
+- **Step 4 (`step.run("finalize-project-report")`)**: 
+    - Update `project_reports` to `status = 'completed'` and save the thoroughly validated `content_json`.
+
+#### 4. Triggering the Job (`app/projects/[id]/page.tsx` & Actions)
+- **UI**: Add a "Synthesize Project" button (shadcn/ui button, Fitts's Law compliant, 44px min hit target). 
+- **UX State**: If `project_reports.status === 'synthesizing'`, disable the button and show a Framer Motion loading pulse.
+- **Server Action**: `synthesizeProjectAction(projectId)`
+    - Validates `orgId` via Clerk `auth()`.
+    - Checks that at least one `completed` source report exists.
+    - Emits `inngest.send({ name: "project.synthesize", data: { projectId, orgId } })`.
+    - Calls `revalidatePath` to immediately reflect the 'synthesizing' state on the client.
+
+### EXPECTED OUTPUT
+1.  The `0006_project_reports.sql` migration script.
+2.  Updated Zod schemas exported in `lib/synthesis.ts`.
+3.  The new Inngest function in `app/api/inngest/functions.ts` with strict `step.run` isolation and the exact-substring verification loop.
+4.  The Server Action and updated UI for the Project Detail page.

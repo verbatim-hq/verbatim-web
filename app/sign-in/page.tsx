@@ -1,54 +1,66 @@
-import Link from "next/link";
+import { SignIn } from "@clerk/nextjs";
+
 import { Wordmark } from "@/components/brand/wordmark";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 /**
- * Saturday (Day 3) task: replace this page with Clerk's `<SignIn />`
- * component, wired to Google OAuth only. No password auth in v1.
+ * Google OAuth only — disable password / other social providers in the Clerk
+ * Dashboard (User & Authentication → Social connections) so this surface never
+ * offers alternatives to "Continue with Google".
  */
 export default function SignInPage() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "32px",
-        gap: "32px",
-      }}
-    >
+    <main className="relative z-[1] flex min-h-screen flex-col items-center justify-center gap-8 px-8 py-16">
       <Wordmark />
-      <div
-        style={{
-          padding: "40px",
-          border: "1px solid var(--border)",
-          background: "var(--bg-elevated)",
-          borderRadius: "14px",
-          maxWidth: "420px",
-          textAlign: "center",
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: "var(--display)",
-            fontSize: "28px",
-            marginBottom: "12px",
-          }}
-        >
-          Sign-in opens Saturday.
-        </h1>
-        <p style={{ color: "var(--text-soft)", marginBottom: "24px" }}>
-          Private preview access is rolling out to design partners. Request
-          yours on the main site.
-        </p>
-        <Link
-          href="https://joinverbatim.com"
-          style={{ color: "var(--blue)", textDecoration: "none" }}
-        >
-          → joinverbatim.com
-        </Link>
-      </div>
+
+      <Card className="w-full max-w-md border-[var(--border)] shadow-none">
+        <CardHeader className="text-center">
+          <CardTitle className="font-display text-[28px] font-normal tracking-tight">
+            Sign in to Verbatim
+          </CardTitle>
+          <CardDescription className="text-[15px] leading-relaxed">
+            Private preview · Use your Google workspace or personal account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex justify-center pb-10">
+          <SignIn
+            appearance={{
+              variables: {
+                colorPrimary: "var(--color-blue)",
+                colorBackground: "var(--bg-elevated)",
+                colorInputBackground: "var(--bg)",
+                colorText: "var(--text)",
+                colorTextSecondary: "var(--text-soft)",
+                colorNeutral: "var(--border)",
+                borderRadius: "10px",
+                fontFamily: "var(--sans)",
+              },
+              elements: {
+                card: "shadow-none border border-[var(--border)] bg-[var(--bg-elevated)]",
+                headerTitle: "hidden",
+                headerSubtitle: "hidden",
+                socialButtonsBlockButton:
+                  "min-h-10 border-[var(--border)] bg-[var(--bg)] text-[var(--text)] hover:bg-[var(--bg-hover)]",
+                socialButtonsBlockButtonText: "font-medium",
+                dividerLine: "bg-[var(--border)]",
+                dividerText: "text-[var(--text-faint)]",
+                footer: "hidden",
+                formFieldInputShowPasswordButton: "hidden",
+              },
+            }}
+            forceRedirectUrl="/projects"
+            path="/sign-in"
+            routing="path"
+            signUpUrl="/sign-in"
+          />
+        </CardContent>
+      </Card>
     </main>
   );
 }
