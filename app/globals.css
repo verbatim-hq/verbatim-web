@@ -7,37 +7,26 @@
  * ------------------------------------------------------------------------- */
 
 :root {
-  --bg: #0e0f11;
-  --bg-elevated: #17181b;
-  --bg-hover: #1e1f23;
-  --border: #26272b;
-  --border-strong: #35373c;
+  --bg: #0E0F11;
+  --bg-elevated: #17181B;
+  --bg-hover: #1E1F23;
+  --border: #26272B;
+  --border-strong: #35373C;
 
-  --text: #f4f4f5;
-  --text-soft: #a8a9ad;
-  --text-faint: #6a6b70;
+  --text: #F4F4F5;
+  --text-soft: #A8A9AD;
+  --text-faint: #6A6B70;
 
-  --blue: #4a9eff;
+  --blue: #4A9EFF;
   --blue-soft: rgba(74, 158, 255, 0.12);
-  --orange: #ff7849;
+  --orange: #FF7849;
   --orange-soft: rgba(255, 120, 73, 0.12);
 
-  /* Feature 1 named tokens — alias the brand pair for clarity in new code */
-  --color-blue: var(--blue);
-  --color-orange: var(--orange);
-
-  --display: var(--font-instrument-serif), georgia, serif;
-  --sans: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
-  --mono: var(--font-geist-mono), "SF Mono", menlo, monospace;
+  --display: "Instrument Serif", "Georgia", serif;
+  --sans: "Geist", -apple-system, system-ui, sans-serif;
+  --mono: "Geist Mono", "SF Mono", "Menlo", monospace;
 
   --max: 1140px;
-}
-
-/* Quotes: Instrument Serif at 18px italic (human voice). */
-.font-quote {
-  font-family: var(--display);
-  font-size: 18px;
-  font-style: italic;
 }
 
 * {
@@ -60,23 +49,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-}
-
-/* Fitts's Law — minimum 40×40px interactive targets */
-button,
-[role="button"],
-input[type="submit"],
-input[type="button"],
-input[type="reset"] {
-  min-height: 40px;
-  min-width: 40px;
-}
-
-a[href] {
-  box-sizing: border-box;
-  min-height: 40px;
-  display: inline-flex;
-  align-items: center;
 }
 
 /* Ambient grid + glow — matches landing page atmosphere */

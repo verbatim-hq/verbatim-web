@@ -148,7 +148,7 @@ export default function HomePage() {
             color: "var(--text-faint)",
           }}
         >
-          You&apos;re on <code style={{ fontFamily: "var(--mono)" }}>app.joinverbatim.com</code>.
+          You're on <code style={{ fontFamily: "var(--mono)" }}>app.joinverbatim.com</code>.
           Public site → <Link href="https://joinverbatim.com" style={{ color: "var(--blue)" }}>joinverbatim.com</Link>
         </p>
       </main>

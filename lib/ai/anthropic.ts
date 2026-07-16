@@ -12,8 +12,9 @@ import Anthropic from "@anthropic-ai/sdk";
  */
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
-// Avoid throwing at import-time: Next.js `next build` executes some server
-// modules during route analysis. Runtime callers must ensure the key exists.
+if (!apiKey && process.env.NODE_ENV === "production") {
+  throw new Error("ANTHROPIC_API_KEY is required in production.");
+}
 
 export const anthropic = new Anthropic({
   apiKey: apiKey ?? "placeholder-for-local-dev",
@@ -25,8 +26,7 @@ export const anthropic = new Anthropic({
  * ------------------------------------------------------------------------- */
 
 export const MODELS = {
-  // Feature 4 requirement: Claude Sonnet 4.6 for synthesis.
-  SYNTHESIS: "claude-sonnet-4-6",
+  SYNTHESIS: "claude-sonnet-4-5",
   EXTRACTION: "claude-haiku-4-5",
 } as const;
 
@@ -36,12 +36,9 @@ export const MODELS = {
  * ------------------------------------------------------------------------- */
 
 export const MODEL_PRICING_CENTS_PER_MTOK = {
-  // Keep in sync with Anthropic pricing.
-  "claude-sonnet-4-6": { input: 300, output: 1500 },
+  "claude-sonnet-4-5": { input: 300, output: 1500 },
   "claude-haiku-4-5": { input: 100, output: 500 },
 } as const;
-
-export type PricedModel = keyof typeof MODEL_PRICING_CENTS_PER_MTOK;
 
 export function costCents(
   model: keyof typeof MODEL_PRICING_CENTS_PER_MTOK,

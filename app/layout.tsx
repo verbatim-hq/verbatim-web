@@ -1,32 +1,5 @@
-import { ClerkProvider } from "@clerk/nextjs";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import type { Metadata, Viewport } from "next";
-import { Toaster } from "sonner";
-
 import "./globals.css";
-
-/** Ensures `next build` / CI succeeds when Clerk keys are absent (pages are SSR). Remove if you split static marketing routes from the Clerk shell. */
-export const dynamic = "force-dynamic";
-
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
@@ -74,31 +47,21 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          {/* SVG favicon — same asset as joinverbatim.com */}
-          <link
-            rel="icon"
-            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230E0F11'/><text x='32' y='46' font-size='38' font-family='Georgia,serif' font-style='italic' font-weight='500' fill='%23FAFAFA' text-anchor='middle'>V</text></svg>"
-          />
-        </head>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
-        >
-          {children}
-          <Toaster
-            theme="dark"
-            toastOptions={{
-              style: {
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border)",
-                color: "var(--text)",
-              },
-            }}
-          />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
+        {/* SVG favicon, same one the landing page uses */}
+        <link
+          rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230E0F11'/><text x='32' y='46' font-size='38' font-family='Georgia,serif' font-style='italic' font-weight='500' fill='%23FAFAFA' text-anchor='middle'>V</text></svg>"
+        />
+      </head>
+      <body>{children}</body>
+    </html>
   );
 }
