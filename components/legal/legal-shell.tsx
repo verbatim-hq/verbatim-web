@@ -80,7 +80,7 @@ export function LegalShell({ title, children }: LegalShellProps) {
             textTransform: "uppercase",
           }}
         >
-          Last updated · July 2026
+          Last updated · July 18, 2026
         </p>
         <h1
           style={{

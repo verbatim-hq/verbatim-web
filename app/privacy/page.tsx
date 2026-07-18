@@ -49,6 +49,16 @@ export default function PrivacyPage() {
         </p>
       </LegalSection>
 
+      <LegalSection title="SMS opt-in">
+        <p>
+          Businesses may opt in to receive SMS updates from Verbatim AI Agency
+          by texting{" "}
+          <strong style={{ color: "var(--text)", fontWeight: 500 }}>START</strong>{" "}
+          to (519) 937-6793. You will receive a one-time confirmation message.
+          Message and data rates may apply. Message frequency varies.
+        </p>
+      </LegalSection>
+
       <LegalSection title="SMS opt-out and support">
         <p>
           If you receive an SMS message from us, you can reply{" "}
@@ -65,7 +75,12 @@ export default function PrivacyPage() {
           described in this policy, or as required by law. We take reasonable
           security measures to protect the information we hold.
         </p>
-        <p>We do not sell data to third parties.</p>
+        <p>
+          Your mobile information will not be sold or shared with third parties
+          for promotional or marketing purposes. Text messaging originator
+          opt-in data and consent information will not be shared with any third
+          parties for any purpose.
+        </p>
       </LegalSection>
 
       <LegalSection title="Your rights (Canada)">
