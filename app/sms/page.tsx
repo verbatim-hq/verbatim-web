@@ -53,7 +53,7 @@ export default function SmsPage() {
           </strong>
           , you consent to receive SMS messages from Verbatim AI Agency about
           our Google review generation service for local trades businesses.
-          Message and data rates may apply. Message frequency varies. Reply{" "}
+          Msg &amp; data rates may apply. Message frequency varies. Reply{" "}
           <strong style={{ color: "var(--text-soft)", fontWeight: 500 }}>
             STOP
           </strong>{" "}
@@ -103,11 +103,22 @@ export default function SmsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="Privacy">
+      <LegalSection title="No purchase required">
+        <p>
+          Consent is not a condition of purchase. You may opt in or out
+          regardless of whether you are a client.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Privacy &amp; terms">
         <p>
           For details on how your mobile information is handled, see our{" "}
           <Link href="/privacy" style={{ color: "var(--blue)" }}>
             Privacy Policy
+          </Link>{" "}
+          and{" "}
+          <Link href="/terms" style={{ color: "var(--blue)" }}>
+            Terms &amp; Conditions
           </Link>
           . Your mobile information will not be sold or shared with third
           parties for promotional or marketing purposes.
