@@ -37,9 +37,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['"Instrument Serif"', "Georgia", "serif"],
-        sans: ['"Geist"', "-apple-system", "system-ui", "sans-serif"],
-        mono: ['"Geist Mono"', '"SF Mono"', "Menlo", "monospace"],
+        display: ['"Clash Display"', "Georgia", "serif"],
+        sans: ['"General Sans"', "-apple-system", "system-ui", "sans-serif"],
+        mono: ['"DM Mono"', "Menlo", "monospace"],
       },
       maxWidth: {
         page: "1140px",
